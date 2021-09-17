@@ -1,7 +1,12 @@
+#loading necessary packages
+
 library(understatr)
 library(ggsoccer)
 library(dplyr)
 library(ggplot2)
+
+#getting the data + filtering
+
 data <- get_player_shots(5555)
 
 data <- data %>%
@@ -9,11 +14,17 @@ data <- data %>%
 data <- data %>%
   filter(year == "2020")
 
+#fitting coordinates to statsbomb pitch
+
 data$NewX <- data$X * 120
 data$NewY <- data$Y * 80
 
+#Mean of X,Y coordinates
+
 data$Xm <- mean(data$NewX)
 data$Ym <- mean(data$NewY)
+
+#plotting pitch
 
 p <- ggplot()+
   annotate_pitch(dimensions = pitch_statsbomb, fill = "#000000", colour = "white")+
@@ -22,7 +33,9 @@ p <- ggplot()+
              ylim = c(82, -2)) +
   theme(plot.background = element_rect(colour = "#000000", fill = "#000000"),
         panel.background = element_rect(colour = "#000000", fill = "#000000"))
-p
+
+#final map
+
 p + geom_segment(data = data, aes(x = 60, xend = 120, y = 40, yend = 40), colour = "white", size = 1) +
   geom_segment(data = data, aes(x = 120, xend = 106.5556, y = 40, yend = 41.24194), colour = "white", size = 1, linetype = "dotted") +
   geom_point(data = data, aes(x = Xm, y = Ym), colour = "Red", size = 4)
