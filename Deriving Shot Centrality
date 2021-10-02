@@ -1,46 +1,48 @@
-#loading packages
+#Loading packages
 
 library(dplyr)
 library(worldfootballr)
 
-#getting data and data manipulation
+#Getting data and data manipulation
 
 shots <- understat_league_season_shots(league = "EPL", season_start_year = 2020)
-sh <- shots %>%
-  filter(situation == "OpenPlay")
-sh$NewX <- sh$X * 120
-sh$NewY <- sh$Y * 80
+data <- shots %>%
+  filter(situation == "OpenPlay") %>%
+  mutate(NewX = X * 120) %>%
+  mutate(NewY = Y * 80)
 
-#setting point and calculating variance
+#Setting point and calculating variance
 
-sh$Xc <- 120
-sh$Yc <- 40
-sh$Xsd <- sh$Xc - sh$NewX
-sh$Ysd <- sh$Yc - sh$NewY
+data <- data %>%
+  mutate(Xc = 120) %>%
+  mutate(Yc = 40) %>%
+  mutate(Xsd = Xc - NewX) %>%
+  mutate(Ysd = Yc - NewY)
 
-sho <- sh[, c(8, 26, 27)]
+data1 <- data[, c(8,26,27)]
 
-sho$ycol <- sho$Ysd * sho$Ysd
-sho$xcol <- sho$Xsd * sho$Xsd 
+data1 <- data1 %>%
+  mutate(xcol = Xsd * Xsd) %>%
+  mutate(ycol = Ysd * Ysd)
 
-sho <- sho[, c(1,4,5)]
+data1 <- data1[, c(1,4,5)]
+data1 <- aggregate(.~player,data=data1,FUN=sum)
 
-sho <- aggregate(.~player,data=sho,FUN=sum)
+#Grouping players to get number of shots
 
-#grouping players to get number of shots
-
-shot <- sh %>%
+data2 <- data %>%
   group_by(player) %>%
   summarise(n())
 
-sho <- cbind(sho, shot)
+data <- cbind(data1, data2)
+data <- data[, c(1,2,3,5)]
 
-sho <- sho[, c(1,2,3,5)]
+#Calculating standard deviation
 
-#calculating sd
+data <- data %>%
+  mutate(xsum = xcol / `n()`) %>%
+  mutate(ysum = ycol / `n()`) %>%
+  mutate(xval = sqrt(xsum)) %>%
+  mutate(yval = sqrt(ysum))
 
-sho$ysum <- sho$ycol / sho$`n()`
-sho$xsum <- sho$xcol / sho$`n()`
-
-sho$ysum <- sqrt(sho$ysum)
-sho$xsum <- sqrt(sho$xsum)
+data <- data[, c(1,4,7,8)]
