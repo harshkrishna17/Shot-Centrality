@@ -1,9 +1,9 @@
-#Loading packages
+# Loading packages
 
 library(dplyr)
 library(worldfootballr)
 
-#Getting data and data manipulation
+# Getting data and data manipulation
 
 shots <- understat_league_season_shots(league = "EPL", season_start_year = 2020)
 data <- shots %>%
@@ -11,7 +11,7 @@ data <- shots %>%
   mutate(NewX = X * 120) %>%
   mutate(NewY = Y * 80)
 
-#Setting point and calculating variance
+# Setting point and calculating variance
 
 data <- data %>%
   mutate(Xc = 120) %>%
@@ -28,7 +28,7 @@ data1 <- data1 %>%
 data1 <- data1[, c(1,4,5)]
 data1 <- aggregate(.~player,data=data1,FUN=sum)
 
-#Grouping players to get number of shots
+# Grouping players to get number of shots
 
 data2 <- data %>%
   group_by(player) %>%
@@ -37,7 +37,7 @@ data2 <- data %>%
 data <- cbind(data1, data2)
 data <- data[, c(1,2,3,5)]
 
-#Calculating standard deviation
+# Calculating standard deviation
 
 data <- data %>%
   mutate(xsum = xcol / `n()`) %>%
