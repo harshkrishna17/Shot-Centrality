@@ -10,12 +10,12 @@ library(ggplot2)
 data <- get_player_shots(5555)
 
 data <- data %>%
-  filter(situation == "OpenPlay") %>%
-  filter(year == "2020") %>%
-  mutate(NewX = X * 120) %>%
-  mutate(NewY = Y * 80) %>%
-  mutate(Xm = mean(NewX)) %>%
-  mutate(Ym = mean(NewY))
+  filter(situation == "OpenPlay",
+         year == "2020") %>%
+  mutate(NewX = X * 120,
+         NewY = Y * 80,
+         Xm = mean(NewX),
+         Ym = mean(NewY))
 
 # Plotting pitch
 
