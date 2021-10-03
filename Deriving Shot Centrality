@@ -8,22 +8,22 @@ library(worldfootballr)
 shots <- understat_league_season_shots(league = "EPL", season_start_year = 2020)
 data <- shots %>%
   filter(situation == "OpenPlay") %>%
-  mutate(NewX = X * 120) %>%
-  mutate(NewY = Y * 80)
+  mutate(NewX = X * 120,
+         NewY = Y * 80)
 
 # Setting point and calculating variance
 
 data <- data %>%
-  mutate(Xc = 120) %>%
-  mutate(Yc = 40) %>%
-  mutate(Xsd = Xc - NewX) %>%
-  mutate(Ysd = Yc - NewY)
+  mutate(Xc = 120,
+         Yc = 40,
+         Xsd = Xc - NewX,
+         Ysd = Yc - NewY)
 
 data1 <- data[, c(8,26,27)]
 
 data1 <- data1 %>%
-  mutate(xcol = Xsd * Xsd) %>%
-  mutate(ycol = Ysd * Ysd)
+  mutate(xcol = Xsd * Xsd,
+         ycol = Ysd * Ysd)
 
 data1 <- data1[, c(1,4,5)]
 data1 <- aggregate(.~player,data=data1,FUN=sum)
@@ -40,9 +40,9 @@ data <- data[, c(1,2,3,5)]
 # Calculating standard deviation
 
 data <- data %>%
-  mutate(xsum = xcol / `n()`) %>%
-  mutate(ysum = ycol / `n()`) %>%
-  mutate(xval = sqrt(xsum)) %>%
-  mutate(yval = sqrt(ysum))
+  mutate(xsum = xcol / `n()`,
+         ysum = ycol / `n()`, 
+         xval = sqrt(xsum), 
+         yval = sqrt(ysum))
 
 data <- data[, c(1,4,7,8)]
