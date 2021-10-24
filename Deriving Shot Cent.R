@@ -1,7 +1,7 @@
 # Loading packages
 
 library(dplyr)
-library(worldfootballr)
+library(worldfootballR)
 
 # Getting data and data manipulation
 
